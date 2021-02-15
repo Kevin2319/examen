@@ -1,0 +1,183 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>EXAMEN</title>
+    <link href="~/Content/css/bootstrap.css" rel="stylesheet" />
+
+</head>
+<body>
+    <br />
+    <div class="container">
+        <div class="row">
+            <h3>&nbsp;VEHÍCULO</h3>
+            <div class="col-sm-6">
+
+                <div class="col-sm-6">
+                    <label>MARCA </label>
+                    <input type="text" class="form-control input-sm" name="MARCA" id="txtMARCA" onblur="TraerDatosMarca()" required>
+                </div>
+                <div class="col-sm-6">
+                    <label>SUBMARCA </label>
+                    <input type="text" class="form-control input-sm" name="SUBMARCA" id="txtSUBMARCA">
+                    <br />
+                </div>
+                <div class="col-sm-6">
+                    <label>TIPO </label>
+                    <input type="text" class="form-control input-sm" name="TIPO" id="txtTIPO">
+                    <br />
+                </div>
+                <div class="col-sm-6">
+                    <label>MODELO </label>
+                    <input type="text" class="form-control input-sm" name="MODELO" id="txtMODELO"><br />
+                </div>
+                <div class="col-sm-6">
+                    <label>DESCRIPCION </label>
+                    <input type="text" class="form-control input-sm" name="DISCRIPCION" id="txtDISCRIPCION"><br />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <h3>&nbsp;DOMICILIO</h3>
+            <div class="col-sm-6">
+                <div class="col-sm-6">
+                    <label>CÓDIGO POSTAL </label>
+                    <input type="text" class="form-control input-sm" name="CODIGO_POSTAL" id="txtCODIGO_POSTAL" onblur="TraerDatosCP()" required>
+                </div>
+                <div class="col-sm-6">
+                    <label>ESTADO </label>
+                    <input type="text" class="form-control input-sm" name="ESTADO" id="txtESTADO"><br />
+                </div>
+                <div class="col-sm-6">
+                    <label>MUNICIPIO </label>
+                    <input type="text" class="form-control input-sm" name="MUNICIPIO" id="txtMUNICIPIO">
+                </div>
+                <div class="col-sm-6">
+                    <label>COLONIA </label>
+                    <input type="text" class="form-control input-sm" name="COLONIA" id="txtCOLONIA"><br />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <h3>&nbsp;PERSONA</h3>
+            <div class="col-sm-6">
+                <label>FECHA NACIMIENTO</label>
+                <input type="datetime-local" class="form-control input-sm" name="FECHA_NACIMIENTO" id="txtFECHA_NACIMIENTO" required />
+            </div>
+            <div class="col-sm-6">
+                <label>GENERO</label>
+                <select class="form-control input-sm" id="txtGENERO" required>
+                    <option>MASCULINO</option>
+                    <option>FEMENINO</option>
+                </select>
+            </div>
+        </div>
+    </div><br />
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="btn btn-success" id="btnAgregar"  onclick="InsertParam()">&nbsp;&nbsp;INGRESAR</a><br /><br />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <script src="https://kit.fontawesome.com/ed14086312.js"></script>
+    <script>
+        $(document).ready(function () {
+            TraerDatosMarca();
+        });
+
+        function TraerDatosMarca() {
+            var marca = $("#txtMARCA").val();
+            $.ajax({
+                type: "GET",
+                url: '../Home/GetAuto',
+                data: { id: marca },
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+
+
+                    $("#txtSUBMARCA").val(data.Items.SUBMARCA);
+                    $("#txtTIPO").val(data.Items.TIPO);
+                    $("#txtMODELO").val(data.Items.MODELO);
+                    $("#txtDISCRIPCION").val(data.Items.DISCRIPCION);
+
+                }
+            })
+        }
+
+        function TraerDatosCP() {
+            var cp = $("#txtCODIGO_POSTAL").val();
+            $.ajax({
+                type: "GET",
+                url: '../Home/GetCP',
+                data: { id: cp },
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+
+                    $("#txtESTADO").val(data.Items.ESTADO);
+                    $("#txtMUNICIPIO").val(data.Items.MUNICIPIO);
+                    $("#txtCOLONIA").val(data.Items.COLONIA);
+
+                }
+            })
+        }
+
+        function InsertParam() {
+
+            var data = {
+
+                ObjContrato: {
+                    MARCA: $('#txtMARCA').val(),
+                    SUBMARCA: $("#txtSUBMARCA").val(),
+                    TIPO: $("#txtTIPO").val(),
+                    MODELO: $("#txtMODELO").val(),
+                    DESCRIPCION: $("#txtDISCRIPCION").val(),
+                    CODIGO_POSTAL: $("#txtCODIGO_POSTAL").val(),
+                    ESTADO: $("#txtESTADO").val(),
+                    MUNICIPIO: $("#txtMUNICIPIO").val(),
+                    COLONIA: $("#txtCOLONIA").val(),
+                    FECHA_NACIMIENTO: $("#txtFECHA_NACIMIENTO").val(),
+                    GENERO: $("#txtGENERO").val(),
+
+                }
+            }
+
+            $.ajax({
+                type: "POST",
+                url: '../Home/Insert',
+                data: JSON.stringify(data),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+
+
+                    if (data.status == true) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: data.message,
+                            showConfirmButton: true,
+                        }).then(function () {
+                            location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: data.message,
+
+                        })
+                    }
+                }
+            })
+        }
+
+    </script>
+</body>
+</html>

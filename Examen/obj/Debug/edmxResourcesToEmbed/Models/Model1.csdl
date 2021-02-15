@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="examenModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="DESCRIPCION">
+    <Key>
+      <PropertyRef Name="ID_DESC" />
+    </Key>
+    <Property Name="ID_DESC" Type="Int32" Nullable="false" />
+    <Property Name="MARCA" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="MODELO" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="DESCRIPCION1" Type="String" MaxLength="2000" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="MARCA1" Relationship="Self.FK_DESCRIPCION_MARCA" FromRole="DESCRIPCION" ToRole="MARCA" />
+    <Property Name="SUBMARCA" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <EntityType Name="MARCA">
+    <Key>
+      <PropertyRef Name="MARCA1" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="MARCA1" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="FEHA_ALTA" Type="DateTime" Nullable="false" Precision="7" />
+    <NavigationProperty Name="DESCRIPCION" Relationship="Self.FK_DESCRIPCION_MARCA" FromRole="MARCA" ToRole="DESCRIPCION" />
+  </EntityType>
+  <EntityType Name="sysdiagrams">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="principal_id" Type="Int32" Nullable="false" />
+    <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="version" Type="Int32" />
+    <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+  </EntityType>
+  <Association Name="FK_DESCRIPCION_MARCA">
+    <End Role="MARCA" Type="Self.MARCA" Multiplicity="0..1" />
+    <End Role="DESCRIPCION" Type="Self.DESCRIPCION" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="MARCA">
+        <PropertyRef Name="MARCA1" />
+      </Principal>
+      <Dependent Role="DESCRIPCION">
+        <PropertyRef Name="MARCA" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="examenEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="DESCRIPCION" EntityType="Self.DESCRIPCION" />
+    <EntitySet Name="MARCA" EntityType="Self.MARCA" />
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" />
+    <AssociationSet Name="FK_DESCRIPCION_MARCA" Association="Self.FK_DESCRIPCION_MARCA">
+      <End Role="MARCA" EntitySet="MARCA" />
+      <End Role="DESCRIPCION" EntitySet="DESCRIPCION" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
